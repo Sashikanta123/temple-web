@@ -15,6 +15,8 @@ const templeForm = $("#templeForm");
 let staticTemplesCache = null;
 const STATIC_ADMIN_KEY = "netlifyAdminAuthenticated";
 const STATIC_TEMPLES_KEY = "netlifyTempleData";
+const STATIC_DATA_VERSION_KEY = "netlifyTempleDataVersion";
+const STATIC_DATA_VERSION = "2026-05-26-real-images-v2";
 const PLACEHOLDER_IMAGE = "/assets/temple-placeholder.svg";
 
 async function api(path, options = {}) {
@@ -43,11 +45,13 @@ async function api(path, options = {}) {
 async function loadStaticTemples() {
   if (!staticTemplesCache) {
     const saved = localStorage.getItem(STATIC_TEMPLES_KEY);
-    if (saved) {
+    const savedVersion = localStorage.getItem(STATIC_DATA_VERSION_KEY);
+    if (saved && savedVersion === STATIC_DATA_VERSION) {
       staticTemplesCache = JSON.parse(saved);
     } else {
       const response = await fetch("/temples.json");
       staticTemplesCache = await response.json();
+      saveStaticTemples(staticTemplesCache);
     }
   }
   return staticTemplesCache;
@@ -56,6 +60,7 @@ async function loadStaticTemples() {
 function saveStaticTemples(temples) {
   staticTemplesCache = temples;
   localStorage.setItem(STATIC_TEMPLES_KEY, JSON.stringify(temples));
+  localStorage.setItem(STATIC_DATA_VERSION_KEY, STATIC_DATA_VERSION);
 }
 
 async function staticApi(path, options = {}) {

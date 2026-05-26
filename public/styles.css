@@ -1,15 +1,15 @@
 :root {
   color-scheme: light;
-  --ink: #1f2933;
-  --muted: #667085;
-  --line: #d7dee7;
+  --ink: #17202a;
+  --muted: #5d6b7a;
+  --line: #dbe3e5;
   --surface: #ffffff;
-  --soft: #f4f7f3;
+  --soft: #f7f3eb;
   --accent: #b0442e;
   --accent-dark: #842f22;
-  --teal: #176b64;
+  --teal: #0f6a66;
   --gold: #c68a1a;
-  --shadow: 0 18px 45px rgba(31, 41, 51, 0.12);
+  --shadow: 0 18px 45px rgba(23, 32, 42, 0.13);
 }
 
 * {
@@ -24,7 +24,9 @@ body {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
   color: var(--ink);
-  background: #fbfcfa;
+  background:
+    radial-gradient(circle at top left, rgba(198, 138, 26, 0.12), transparent 32rem),
+    linear-gradient(180deg, #fffdf8 0%, #f7faf8 42%, #fff 100%);
   line-height: 1.5;
 }
 
@@ -43,7 +45,7 @@ button {
   position: sticky;
   top: 0;
   z-index: 10;
-  background: rgba(255, 255, 255, 0.94);
+  background: rgba(255, 255, 255, 0.92);
   border-bottom: 1px solid var(--line);
   backdrop-filter: blur(14px);
 }
@@ -51,7 +53,7 @@ button {
 .nav-shell {
   max-width: 1180px;
   margin: 0 auto;
-  padding: 14px 20px;
+  padding: 16px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -73,7 +75,7 @@ button {
   place-items: center;
   border-radius: 50%;
   color: white;
-  background: var(--accent);
+  background: linear-gradient(135deg, var(--accent), #d68b26);
   font-size: 22px;
 }
 
@@ -93,10 +95,17 @@ button {
   color: var(--ink);
   font-weight: 700;
   text-decoration: none;
+  padding: 9px 10px;
+  border-radius: 999px;
+}
+
+.nav-links a:hover {
+  background: #f6eadf;
+  color: var(--accent-dark);
 }
 
 .hero {
-  min-height: 78vh;
+  min-height: 74vh;
   display: grid;
   align-items: end;
   position: relative;
@@ -107,8 +116,8 @@ button {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(90deg, rgba(15, 23, 42, 0.82), rgba(15, 23, 42, 0.42), rgba(15, 23, 42, 0.12)),
-    url("https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=1800&q=80") center/cover;
+    linear-gradient(90deg, rgba(19, 28, 37, 0.82), rgba(19, 28, 37, 0.48), rgba(19, 28, 37, 0.18)),
+    url("https://commons.wikimedia.org/wiki/Special:FilePath/Meenakshi%20Temple%20%286357522401%29.jpg?width=1800") center/cover;
 }
 
 .hero-content {
@@ -131,7 +140,7 @@ button {
 .hero h1 {
   max-width: 780px;
   margin: 0;
-  font-size: clamp(36px, 6vw, 68px);
+  font-size: clamp(34px, 5.2vw, 62px);
   line-height: 1.05;
 }
 
@@ -163,6 +172,12 @@ button {
   color: var(--ink);
 }
 
+.hero-search input {
+  min-height: 58px;
+  border: 0;
+  box-shadow: var(--shadow);
+}
+
 .hero-search button,
 .login-form button,
 .temple-form button,
@@ -173,6 +188,13 @@ button {
   background: var(--accent);
   color: #fff;
   font-weight: 800;
+}
+
+.hero-search button:hover,
+.login-form button:hover,
+.temple-form button:hover,
+.detail-actions button:hover {
+  background: var(--accent-dark);
 }
 
 .metrics-band {
@@ -189,7 +211,7 @@ button {
 .metrics-band div {
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: 6px;
   padding: 18px;
   box-shadow: var(--shadow);
 }
@@ -208,7 +230,7 @@ button {
 .section-shell {
   max-width: 1180px;
   margin: 0 auto;
-  padding: 72px 20px 24px;
+  padding: 78px 20px 28px;
 }
 
 .section-shell.muted {
@@ -237,6 +259,11 @@ button {
   grid-template-columns: 2fr repeat(3, 1fr);
   gap: 12px;
   margin-bottom: 22px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 10px 30px rgba(23, 32, 42, 0.06);
 }
 
 label {
@@ -264,7 +291,7 @@ label {
 .temple-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  gap: 18px;
 }
 
 .temple-card {
@@ -272,19 +299,25 @@ label {
   border-radius: 8px;
   overflow: hidden;
   background: var(--surface);
-  box-shadow: 0 8px 20px rgba(31, 41, 51, 0.07);
+  box-shadow: 0 10px 26px rgba(23, 32, 42, 0.08);
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.temple-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 34px rgba(23, 32, 42, 0.13);
 }
 
 .temple-card img {
   width: 100%;
-  height: 150px;
+  height: 212px;
   display: block;
   object-fit: cover;
   background: var(--soft);
 }
 
 .temple-card-body {
-  padding: 14px;
+  padding: 18px;
 }
 
 .temple-card h3 {
@@ -328,6 +361,18 @@ label {
   font-weight: 800;
 }
 
+.temple-card button {
+  width: 100%;
+  text-align: center;
+  background: #fbf8f1;
+}
+
+.temple-card button:hover,
+.ghost-button:hover {
+  border-color: var(--accent);
+  color: var(--accent-dark);
+}
+
 .text-button[aria-pressed="true"] {
   border-color: var(--teal);
   color: #fff;
@@ -339,14 +384,14 @@ label {
   top: 84px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  padding: 18px;
+  padding: 20px;
   background: var(--surface);
   box-shadow: var(--shadow);
 }
 
 .detail-panel img {
   width: 100%;
-  height: 190px;
+  height: 240px;
   object-fit: cover;
   border-radius: 8px;
   margin-bottom: 14px;
@@ -395,8 +440,9 @@ label {
 .admin-card {
   border: 1px solid var(--line);
   border-radius: 8px;
-  padding: 16px;
+  padding: 18px;
   background: var(--surface);
+  box-shadow: 0 8px 22px rgba(23, 32, 42, 0.06);
 }
 
 .circuit-card h3,
