@@ -1,0 +1,22 @@
+{
+  "name": "india-temple-heritage-portal",
+  "version": "1.0.0",
+  "description": "India Temple Heritage & Pilgrimage Information Portal fullstack web app.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "temple",
+    "heritage",
+    "pilgrimage",
+    "india",
+    "portal"
+  ],
+  "author": "Unified Mentor Project",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  }
+}

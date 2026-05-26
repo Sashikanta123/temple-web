@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="India Temple Heritage & Pilgrimage Information Portal for temple history, darshan timings, festivals, rituals, and visitor guidelines."
+    />
+    <title>India Temple Heritage Portal</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="nav-shell" aria-label="Primary navigation">
+        <a class="brand" href="#home" aria-label="India Temple Heritage Portal">
+          <span class="brand-mark">ॐ</span>
+          <span>
+            <strong>Temple Heritage</strong>
+            <small>India Pilgrimage Portal</small>
+          </span>
+        </a>
+        <div class="nav-links">
+          <a href="#discover">Discover</a>
+          <a href="#circuits">Circuits</a>
+          <a href="#saved">Saved</a>
+          <a href="#admin">Admin</a>
+        </div>
+      </nav>
+    </header>
+
+    <main id="home">
+      <section class="hero">
+        <div class="hero-media" role="img" aria-label="Temple corridor at sunrise"></div>
+        <div class="hero-content">
+          <p class="eyebrow">Unified Mentor • Incredible India</p>
+          <h1>India Temple Heritage & Pilgrimage Information Portal</h1>
+          <p>
+            Explore verified temple histories, rituals, festivals, darshan timings, visitor rules,
+            and nearby pilgrimage facilities in one respectful digital repository.
+          </p>
+          <form class="hero-search" id="heroSearch">
+            <input id="heroSearchInput" type="search" placeholder="Search by temple, city, state, deity, festival..." />
+            <button type="submit">Search</button>
+          </form>
+        </div>
+      </section>
+
+      <section class="metrics-band" aria-label="Portal metrics">
+        <div><strong id="metricTemples">0</strong><span>Temples listed</span></div>
+        <div><strong id="metricStates">0</strong><span>States covered</span></div>
+        <div><strong id="metricCircuits">0</strong><span>Pilgrimage circuits</span></div>
+        <div><strong id="metricFestivals">0</strong><span>Festival entries</span></div>
+      </section>
+
+      <section class="section-shell" id="discover">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Search & Discovery</p>
+            <h2>Find temples by region, deity, or journey</h2>
+          </div>
+          <button class="ghost-button" id="resetFilters" type="button">Reset</button>
+        </div>
+
+        <div class="filters" aria-label="Temple filters">
+          <label>
+            Search
+            <input id="searchInput" type="search" placeholder="Temple name, ritual, festival..." />
+          </label>
+          <label>
+            State
+            <select id="stateFilter"><option value="">All states</option></select>
+          </label>
+          <label>
+            City
+            <select id="cityFilter"><option value="">All cities</option></select>
+          </label>
+          <label>
+            Deity
+            <select id="deityFilter"><option value="">All deities</option></select>
+          </label>
+        </div>
+
+        <div class="content-layout">
+          <div>
+            <div class="list-toolbar">
+              <strong id="resultCount">0 temples</strong>
+              <button class="text-button" id="featuredOnly" type="button" aria-pressed="false">Featured only</button>
+            </div>
+            <div class="temple-grid" id="templeGrid" aria-live="polite"></div>
+          </div>
+
+          <aside class="detail-panel" id="templeDetail" aria-live="polite">
+            <p class="empty-state">Select a temple to view history, darshan timings, rituals, festivals, and visitor guidance.</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section-shell muted" id="circuits">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Pilgrimage Planning</p>
+            <h2>Popular pilgrimage circuits</h2>
+          </div>
+        </div>
+        <div class="circuit-grid" id="circuitGrid"></div>
+      </section>
+
+      <section class="section-shell" id="saved">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Personal Planning</p>
+            <h2>Saved temples</h2>
+          </div>
+        </div>
+        <div class="saved-list" id="savedList"></div>
+      </section>
+
+      <section class="section-shell admin-section" id="admin">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Content Management</p>
+            <h2>Admin temple information approval</h2>
+          </div>
+          <button class="ghost-button hidden" id="logoutButton" type="button">Logout</button>
+        </div>
+
+        <form class="login-form" id="loginForm">
+          <label>
+            Username
+            <input name="username" autocomplete="username" value="admin" required />
+          </label>
+          <label>
+            Password
+            <input name="password" type="password" autocomplete="current-password" value="admin123" required />
+          </label>
+          <button type="submit">Login</button>
+        </form>
+
+        <div class="admin-workspace hidden" id="adminWorkspace">
+          <form class="temple-form" id="templeForm">
+            <input type="hidden" name="id" />
+            <label>Temple name<input name="name" required /></label>
+            <label>State<input name="state" required /></label>
+            <label>City<input name="city" required /></label>
+            <label>Deity<input name="deity" required /></label>
+            <label>Circuit<input name="circuit" /></label>
+            <label>Image URL<input name="image" /></label>
+            <label>Darshan timings<input name="darshanTimings" /></label>
+            <label>History<textarea name="history" required></textarea></label>
+            <label>Significance<textarea name="significance"></textarea></label>
+            <label>Rituals<textarea name="rituals" placeholder="One item per line"></textarea></label>
+            <label>Festivals<textarea name="festivals" placeholder="One item per line"></textarea></label>
+            <label>Visitor guidelines<textarea name="guidelines" placeholder="One item per line"></textarea></label>
+            <label>Nearby facilities<textarea name="facilities" placeholder="One item per line"></textarea></label>
+            <div class="checkbox-row">
+              <label><input name="approved" type="checkbox" /> Approved</label>
+              <label><input name="featured" type="checkbox" /> Featured</label>
+            </div>
+            <div class="form-actions">
+              <button type="submit">Save temple</button>
+              <button class="ghost-button" id="clearForm" type="button">Clear</button>
+            </div>
+          </form>
+          <div class="admin-list" id="adminList"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>India Temple Heritage Portal • Phase 1 web platform for reliable pilgrimage information.</p>
+    </footer>
+
+    <script src="/app.js" defer></script>
+  </body>
+</html>
