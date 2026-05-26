@@ -12,15 +12,89 @@ const templeDetail = $("#templeDetail");
 const savedList = $("#savedList");
 const adminList = $("#adminList");
 const templeForm = $("#templeForm");
+let staticTemplesCache = null;
 
 async function api(path, options = {}) {
   const response = await fetch(path, {
     headers: { "Content-Type": "application/json", ...(options.headers || {}) },
     ...options
   });
+  const contentType = response.headers.get("content-type") || "";
+  if (!contentType.includes("application/json")) {
+    return staticApi(path, options);
+  }
   const data = await response.json();
   if (!response.ok) throw new Error(data.error || "Request failed");
   return data;
+}
+
+async function loadStaticTemples() {
+  if (!staticTemplesCache) {
+    const response = await fetch("/temples.json");
+    staticTemplesCache = await response.json();
+  }
+  return staticTemplesCache;
+}
+
+async function staticApi(path, options = {}) {
+  if (options.method && options.method !== "GET") {
+    throw new Error("Admin features need the Node backend. Public browsing works on Netlify.");
+  }
+
+  const url = new URL(path, location.origin);
+  const temples = (await loadStaticTemples()).filter((temple) => temple.approved);
+
+  if (url.pathname === "/api/metadata") {
+    const unique = (field) => [...new Set(temples.map((temple) => temple[field]).filter(Boolean))].sort();
+    return {
+      states: unique("state"),
+      cities: unique("city"),
+      deities: unique("deity"),
+      circuits: unique("circuit"),
+      kpis: {
+        listedTemples: temples.length,
+        statesCovered: unique("state").length,
+        circuits: unique("circuit").length,
+        festivalsTracked: temples.reduce((count, temple) => count + (temple.festivals || []).length, 0)
+      }
+    };
+  }
+
+  if (url.pathname === "/api/temples") {
+    const query = (url.searchParams.get("q") || "").toLowerCase();
+    const filtered = temples.filter((temple) => {
+      if (url.searchParams.get("state") && temple.state !== url.searchParams.get("state")) return false;
+      if (url.searchParams.get("city") && temple.city !== url.searchParams.get("city")) return false;
+      if (url.searchParams.get("deity") && temple.deity !== url.searchParams.get("deity")) return false;
+      if (url.searchParams.get("circuit") && temple.circuit !== url.searchParams.get("circuit")) return false;
+      if (url.searchParams.get("featured") === "true" && !temple.featured) return false;
+      if (!query) return true;
+      return [
+        temple.name,
+        temple.state,
+        temple.city,
+        temple.deity,
+        temple.circuit,
+        temple.history,
+        temple.significance,
+        ...(temple.festivals || [])
+      ].join(" ").toLowerCase().includes(query);
+    });
+    return { temples: filtered };
+  }
+
+  const templeId = url.pathname.match(/^\/api\/temples\/([^/]+)$/)?.[1];
+  if (templeId) {
+    const temple = temples.find((item) => item.id === templeId);
+    if (!temple) throw new Error("Temple not found");
+    return { temple };
+  }
+
+  if (url.pathname === "/api/admin/me") {
+    return { authenticated: false, user: null };
+  }
+
+  throw new Error("This feature needs the Node backend.");
 }
 
 function listFromTextarea(value) {
