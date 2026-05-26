@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-label="Temple illustration">
+  <defs>
+    <linearGradient id="sky" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#fff7df"/>
+      <stop offset="0.52" stop-color="#e8f2ee"/>
+      <stop offset="1" stop-color="#f5e4c4"/>
+    </linearGradient>
+    <linearGradient id="stone" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#c68a1a"/>
+      <stop offset="1" stop-color="#8d4d2f"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="720" fill="url(#sky)"/>
+  <circle cx="970" cy="140" r="78" fill="#dca33a" opacity=".45"/>
+  <path d="M0 590c130-42 260-38 390-18s250 62 390 42 260-88 420-52v158H0z" fill="#176b64" opacity=".2"/>
+  <g transform="translate(250 88)">
+    <path d="M350 0 220 170h260z" fill="url(#stone)"/>
+    <path d="M350 74 258 195h184z" fill="#b0442e"/>
+    <rect x="190" y="178" width="320" height="70" rx="6" fill="url(#stone)"/>
+    <path d="M160 248h380l-28 76H188z" fill="#6f3f2c"/>
+    <rect x="205" y="324" width="290" height="176" fill="url(#stone)"/>
+    <rect x="294" y="382" width="112" height="118" rx="52" fill="#41271d"/>
+    <rect x="148" y="500" width="404" height="50" fill="#6f3f2c"/>
+    <rect x="116" y="550" width="468" height="58" fill="#3f625d"/>
+    <g fill="#fff7df" opacity=".65">
+      <circle cx="256" cy="224" r="14"/>
+      <circle cx="350" cy="224" r="14"/>
+      <circle cx="444" cy="224" r="14"/>
+      <rect x="224" y="340" width="34" height="86" rx="16"/>
+      <rect x="442" y="340" width="34" height="86" rx="16"/>
+    </g>
+  </g>
+  <text x="600" y="675" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700" fill="#5a3924">India Temple Heritage</text>
+</svg>

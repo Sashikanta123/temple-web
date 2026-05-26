@@ -13,6 +13,9 @@ const savedList = $("#savedList");
 const adminList = $("#adminList");
 const templeForm = $("#templeForm");
 let staticTemplesCache = null;
+const STATIC_ADMIN_KEY = "netlifyAdminAuthenticated";
+const STATIC_TEMPLES_KEY = "netlifyTempleData";
+const PLACEHOLDER_IMAGE = "/assets/temple-placeholder.svg";
 
 async function api(path, options = {}) {
   const response = await fetch(path, {
@@ -39,19 +42,46 @@ async function api(path, options = {}) {
 
 async function loadStaticTemples() {
   if (!staticTemplesCache) {
-    const response = await fetch("/temples.json");
-    staticTemplesCache = await response.json();
+    const saved = localStorage.getItem(STATIC_TEMPLES_KEY);
+    if (saved) {
+      staticTemplesCache = JSON.parse(saved);
+    } else {
+      const response = await fetch("/temples.json");
+      staticTemplesCache = await response.json();
+    }
   }
   return staticTemplesCache;
 }
 
+function saveStaticTemples(temples) {
+  staticTemplesCache = temples;
+  localStorage.setItem(STATIC_TEMPLES_KEY, JSON.stringify(temples));
+}
+
 async function staticApi(path, options = {}) {
-  if (options.method && options.method !== "GET") {
-    throw new Error("Admin features need the Node backend. Public browsing works on Netlify.");
+  const url = new URL(path, location.origin);
+  const allTemples = await loadStaticTemples();
+  const temples = allTemples.filter((temple) => temple.approved);
+  const method = options.method || "GET";
+
+  if (url.pathname === "/api/admin/login" && method === "POST") {
+    const body = JSON.parse(options.body || "{}");
+    if (body.username === "admin" && body.password === "admin123") {
+      localStorage.setItem(STATIC_ADMIN_KEY, "true");
+      return { ok: true, user: "admin" };
+    }
+    throw new Error("Invalid admin credentials");
   }
 
-  const url = new URL(path, location.origin);
-  const temples = (await loadStaticTemples()).filter((temple) => temple.approved);
+  if (url.pathname === "/api/admin/logout" && method === "POST") {
+    localStorage.removeItem(STATIC_ADMIN_KEY);
+    return { ok: true };
+  }
+
+  if (url.pathname === "/api/admin/me") {
+    const authenticated = localStorage.getItem(STATIC_ADMIN_KEY) === "true";
+    return { authenticated, user: authenticated ? "admin" : null };
+  }
 
   if (url.pathname === "/api/metadata") {
     const unique = (field) => [...new Set(temples.map((temple) => temple[field]).filter(Boolean))].sort();
@@ -70,8 +100,11 @@ async function staticApi(path, options = {}) {
   }
 
   if (url.pathname === "/api/temples") {
+    const visibleTemples = url.searchParams.get("includePending") === "true" && localStorage.getItem(STATIC_ADMIN_KEY) === "true"
+      ? allTemples
+      : temples;
     const query = (url.searchParams.get("q") || "").toLowerCase();
-    const filtered = temples.filter((temple) => {
+    const filtered = visibleTemples.filter((temple) => {
       if (url.searchParams.get("state") && temple.state !== url.searchParams.get("state")) return false;
       if (url.searchParams.get("city") && temple.city !== url.searchParams.get("city")) return false;
       if (url.searchParams.get("deity") && temple.deity !== url.searchParams.get("deity")) return false;
@@ -99,11 +132,33 @@ async function staticApi(path, options = {}) {
     return { temple };
   }
 
-  if (url.pathname === "/api/admin/me") {
-    return { authenticated: false, user: null };
+  if (url.pathname === "/api/admin/temples" && method === "POST") {
+    const body = JSON.parse(options.body || "{}");
+    const temple = {
+      ...body,
+      id: crypto.randomUUID(),
+      updatedAt: new Date().toISOString()
+    };
+    saveStaticTemples([temple, ...allTemples]);
+    return { temple };
   }
 
-  throw new Error("This feature needs the Node backend.");
+  const adminTempleId = url.pathname.match(/^\/api\/admin\/temples\/([^/]+)$/)?.[1];
+  if (adminTempleId && method === "PUT") {
+    const body = JSON.parse(options.body || "{}");
+    const updated = allTemples.map((temple) => temple.id === adminTempleId ? { ...temple, ...body, updatedAt: new Date().toISOString() } : temple);
+    const temple = updated.find((item) => item.id === adminTempleId);
+    saveStaticTemples(updated);
+    return { temple };
+  }
+
+  if (adminTempleId && method === "DELETE") {
+    const temple = allTemples.find((item) => item.id === adminTempleId);
+    saveStaticTemples(allTemples.filter((item) => item.id !== adminTempleId));
+    return { temple };
+  }
+
+  throw new Error("This feature is unavailable.");
 }
 
 function listFromTextarea(value) {
@@ -124,7 +179,7 @@ function setOptions(select, values, placeholder) {
 }
 
 function templeImage(temple) {
-  return temple.image || "https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?auto=format&fit=crop&w=1200&q=80";
+  return temple.image || PLACEHOLDER_IMAGE;
 }
 
 function getFilters() {
@@ -184,7 +239,7 @@ function renderTemples() {
     const card = document.createElement("article");
     card.className = "temple-card";
     card.innerHTML = `
-      <img src="${templeImage(temple)}" alt="${temple.name}" loading="lazy">
+      <img src="${templeImage(temple)}" alt="${temple.name}" loading="lazy" onerror="this.onerror=null;this.src='${PLACEHOLDER_IMAGE}'">
       <div class="temple-card-body">
         <div class="card-meta">
           <span class="pill">${temple.state}</span>
@@ -204,7 +259,7 @@ function renderTempleDetail(temple) {
   state.selectedTemple = temple;
   const saved = localSavedIds().includes(temple.id);
   templeDetail.innerHTML = `
-    <img src="${templeImage(temple)}" alt="${temple.name}">
+    <img src="${templeImage(temple)}" alt="${temple.name}" onerror="this.onerror=null;this.src='${PLACEHOLDER_IMAGE}'">
     <div class="card-meta">
       <span class="pill">${temple.city}, ${temple.state}</span>
       <span class="pill">${temple.deity}</span>
