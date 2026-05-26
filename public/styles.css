@@ -417,6 +417,12 @@ label {
   align-items: end;
 }
 
+.admin-note {
+  max-width: 680px;
+  margin: 14px 0 0;
+  color: var(--muted);
+}
+
 .admin-workspace {
   display: grid;
   grid-template-columns: 1fr 1fr;

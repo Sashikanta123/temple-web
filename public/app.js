@@ -19,11 +19,20 @@ async function api(path, options = {}) {
     headers: { "Content-Type": "application/json", ...(options.headers || {}) },
     ...options
   });
+  const text = await response.text();
   const contentType = response.headers.get("content-type") || "";
-  if (!contentType.includes("application/json")) {
+
+  if (!text.trim() || !contentType.includes("application/json")) {
     return staticApi(path, options);
   }
-  const data = await response.json();
+
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    return staticApi(path, options);
+  }
+
   if (!response.ok) throw new Error(data.error || "Request failed");
   return data;
 }
@@ -406,7 +415,8 @@ function bindEvents() {
       });
       await checkAdmin();
     } catch (error) {
-      alert(error.message);
+      const note = $("#adminNote");
+      if (note) note.textContent = error.message;
     }
   });
 
